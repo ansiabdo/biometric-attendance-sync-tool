@@ -48,7 +48,8 @@ class BiometricWindow(QMainWindow):
         if can_exit:
             event.accept()
         else:
-            create_message_box(text="Window cannot be closed when \nservice is running!", title="Message", width=200)
+            create_message_box(
+                text="Window cannot be closed when \nservice is running!", title="Message", width=200)
             event.ignore()
 
     def init_ui(self):
@@ -80,11 +81,14 @@ class BiometricWindow(QMainWindow):
         self.create_label("Import Start Date",
                           "import_start_date", 250, 60, 200, 30)
         self.create_field("textbox_import_start_date", 250, 90, 200, 30)
-        self.validate_data(r"^\d{1,2}/\d{1,2}/\d{4}$", "textbox_import_start_date")
+        self.validate_data(r"^\d{1,2}/\d{1,2}/\d{4}$",
+                           "textbox_import_start_date")
 
         self.create_separator(210, 470)
-        self.create_button('+', 'add', 390, 230, 35, 30, self.add_devices_fields)
-        self.create_button('-', 'remove', 420, 230, 35, 30, self.remove_devices_fields)
+        self.create_button('+', 'add', 390, 230, 35,
+                           30, self.add_devices_fields)
+        self.create_button('-', 'remove', 420, 230, 35,
+                           30, self.remove_devices_fields)
 
         self.create_label("Device ID", "device_id", 20, 260, 0, 30)
         self.create_label("Device IP", "device_ip", 170, 260, 0, 30)
@@ -97,9 +101,12 @@ class BiometricWindow(QMainWindow):
         self.create_field("shift_0", 310, 290, 145, 30)
 
         # Actions buttons
-        self.create_button('Set Configuration', 'set_conf', 20, 500, 130, 30, self.setup_local_config)
-        self.create_button('Start Service', 'start_or_stop_service', 320, 500, 130, 30, self.integrate_biometric, enable=False)
-        self.create_button('Running Status', 'running_status', 170, 500, 130, 30, self.get_running_status, enable=False)
+        self.create_button('Set Configuration', 'set_conf',
+                           20, 500, 130, 30, self.setup_local_config)
+        self.create_button('Start Service', 'start_or_stop_service',
+                           320, 500, 130, 30, self.integrate_biometric, enable=False)
+        self.create_button('Running Status', 'running_status', 170,
+                           500, 130, 30, self.get_running_status, enable=False)
         self.set_default_value_or_placeholder_of_field()
 
         # validating integer
@@ -130,9 +137,11 @@ class BiometricWindow(QMainWindow):
 
                     device.setText(config.devices[self.counter]['device_id'])
                     ip.setText(config.devices[self.counter]['ip'])
-                    shift.setText(config.shift_type_device_mapping[self.counter]['shift_type_name'])
+                    shift.setText(
+                        config.shift_type_device_mapping[self.counter]['shift_type_name'])
         else:
-            self.textbox_erpnext_api_secret.setPlaceholderText("c70ee57c7b3124c")
+            self.textbox_erpnext_api_secret.setPlaceholderText(
+                "c70ee57c7b3124c")
             self.textbox_erpnext_api_key.setPlaceholderText("fb37y8fd4uh8ac")
             self.textbox_erpnext_url.setPlaceholderText("example.erpnext.com")
             self.textbox_pull_frequency.setPlaceholderText("60")
@@ -174,7 +183,8 @@ class BiometricWindow(QMainWindow):
 
     def center(self):
         frame = self.frameGeometry()
-        screen = QApplication.desktop().screenNumber(QApplication.desktop().cursor().pos())
+        screen = QApplication.desktop().screenNumber(
+            QApplication.desktop().cursor().pos())
         centerPoint = QApplication.desktop().screenGeometry(screen).center()
         frame.moveCenter(centerPoint)
         self.move(frame.topLeft())
@@ -182,10 +192,14 @@ class BiometricWindow(QMainWindow):
     def add_devices_fields(self):
         if self.counter < 5:
             self.counter += 1
-            self.create_field("device_id_" + str(self.counter), 20, 290+(self.counter * 30), 145, 30)
-            self.create_field("device_ip_" + str(self.counter), 165, 290+(self.counter * 30), 145, 30)
-            self.validate_data(self.reg_exp_for_ip, "device_ip_" + str(self.counter))
-            self.create_field("shift_" + str(self.counter), 310, 290+(self.counter * 30), 145, 30)
+            self.create_field("device_id_" + str(self.counter),
+                              20, 290+(self.counter * 30), 145, 30)
+            self.create_field("device_ip_" + str(self.counter),
+                              165, 290+(self.counter * 30), 145, 30)
+            self.validate_data(self.reg_exp_for_ip,
+                               "device_ip_" + str(self.counter))
+            self.create_field("shift_" + str(self.counter),
+                              310, 290+(self.counter * 30), 145, 30)
 
     def validate_data(self, reg_exp, field_name):
         field = getattr(self, field_name)
@@ -209,12 +223,14 @@ class BiometricWindow(QMainWindow):
 
         if not hasattr(self, 'p'):
             print("Starting Service...")
-            command = shlex.split('python -c "from erpnext_sync import infinite_loop; infinite_loop()"')
+            command = shlex.split(
+                'python -c "from erpnext_sync import infinite_loop; infinite_loop()"')
             self.p = subprocess.Popen(command, stdout=subprocess.PIPE)
             print("Process running at {}".format(self.p.pid))
             button.setText("Stop Service")
             create_message_box("Service status", "Service has been started")
-            self.create_label(str(datetime.datetime.now()), "service_start_time", 20, 60, 200, 30)
+            self.create_label(str(datetime.datetime.now()),
+                              "service_start_time", 20, 60, 200, 30)
             self.service_start_time.setHidden(True)
             getattr(self, 'running_status').setEnabled(True)
         else:
@@ -242,7 +258,8 @@ class BiometricWindow(QMainWindow):
 
         print("Local Configuration Updated.")
 
-        create_message_box("Message", "Configuration Updated!\nClick on Start Service.")
+        create_message_box(
+            "Message", "Configuration Updated!\nClick on Start Service.")
 
         getattr(self, 'start_or_stop_service').setEnabled(True)
 
@@ -263,8 +280,8 @@ class BiometricWindow(QMainWindow):
             if shift in device:
                 device[shift].append(device_id)
             else:
-                device[shift]=[device_id]
-        
+                device[shift] = [device_id]
+
         for shift_type_name in device.keys():
             shifts.append({
                 'shift_type_name': shift_type_name,
@@ -285,43 +302,48 @@ class BiometricWindow(QMainWindow):
         running_status = []
         with open('/'.join([config.LOGS_DIRECTORY])+'/logs.log', 'r') as f:
             index = 0
-            for idx, line in enumerate(f,1):
-                logdate = convert_into_date(line.split(',')[0], '%Y-%m-%d %H:%M:%S')
-                if logdate and logdate >= convert_into_date(self.service_start_time.text().split('.')[0] , '%Y-%m-%d %H:%M:%S'):
+            for idx, line in enumerate(f, 1):
+                logdate = convert_into_date(
+                    line.split(',')[0], '%Y-%m-%d %H:%M:%S')
+                if logdate and logdate >= convert_into_date(self.service_start_time.text().split('.')[0], '%Y-%m-%d %H:%M:%S'):
                     index = idx
                     break
             if index:
-                running_status.extend(read_file_contents('logs',index))
+                running_status.extend(read_file_contents('logs', index))
 
         with open('/'.join([config.LOGS_DIRECTORY])+'/error.log', 'r') as fread:
             error_index = 0
-            for error_idx, error_line in enumerate(fread,1):
-                start_date = convert_into_date(self.service_start_time.text().split('.')[0] , '%Y-%m-%d %H:%M:%S')
+            for error_idx, error_line in enumerate(fread, 1):
+                start_date = convert_into_date(self.service_start_time.text().split('.')[
+                                               0], '%Y-%m-%d %H:%M:%S')
                 if start_date and start_date.strftime('%Y-%m-%d') in error_line:
-                    error_logdate = convert_into_date(error_line.split(',')[0], '%Y-%m-%d %H:%M:%S')
+                    error_logdate = convert_into_date(
+                        error_line.split(',')[0], '%Y-%m-%d %H:%M:%S')
                     if error_logdate and error_logdate >= start_date:
                         error_index = error_idx
                         break
             if error_index:
-                running_status.extend(read_file_contents('error',error_index))
+                running_status.extend(read_file_contents('error', error_index))
 
         if running_status:
             create_message_box("Running status", ''.join(running_status))
         else:
             create_message_box("Running status", 'Process not yet started')
 
+
 def read_file_contents(file_name, index):
     running_status = []
     with open('/'.join([config.LOGS_DIRECTORY])+f'/{file_name}.log', 'r') as file_handler:
-        for idx, line in enumerate(file_handler,1):
-            if idx>=index:
+        for idx, line in enumerate(file_handler, 1):
+            if idx >= index:
                 running_status.append(line)
     return running_status
 
 
 def validate_fields(self):
     def message(text):
-        create_message_box("Missing Value", "Please Set {}".format(text), "warning")
+        create_message_box(
+            "Missing Value", "Please Set {}".format(text), "warning")
 
     if not self.textbox_erpnext_api_key.text():
         return message("API Key")
@@ -343,7 +365,8 @@ def validate_date(date):
         datetime.datetime.strptime(date, '%d/%m/%Y')
         return True
     except ValueError:
-        create_message_box("", "Please Enter Date in correct format", "warning", width=200)
+        create_message_box(
+            "", "Please Enter Date in correct format", "warning", width=200)
         return False
 
 
